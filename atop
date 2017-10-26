@@ -30,6 +30,8 @@ reset=$(tput sgr0)
 # Default variables
 limit='-n 300'
 STATUS_URL="http://127.0.0.1/server-status"
+# sleep seconds between screen clears
+sec='0.5'
 
 # Parse arguments
 while [[ $@ > 0 ]]; do
@@ -41,11 +43,16 @@ while [[ $@ > 0 ]]; do
       "-u" | "--url")
           STATUS_URL="$2"
       ;;
+      
+      "-s" | "--sleep")
+          sec="$2"
+      ;;
 
       "-h" | "--help")
         echo -e "-h --help help\n"
         echo -e "-n --number\n  Limit number of lines returned (default: 300)\n"
         echo -e "-u --url\n  Specify apache status URL (default: http://127.0.0.1/server-status)\n"
+        echo -e "-s --sleep\n  Specify seconds to sleep between screen clears\n"
         exit
       ;;
     esac
@@ -80,6 +87,7 @@ do
         a)  # sort all threads by time
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} {printf "%-6s %6s %6s %-4s %-10s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -n"}' | head $limit
                 #service httpd fullstatus | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} {printf "%-6s %6s %6s %-4s %-10s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -n"}'
@@ -94,6 +102,7 @@ do
         c)  # Sort by CPU, no GCRK.
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} $4 !~ /[GCRK.]/ {printf "%-6s %6s %6s %-4s %-8s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -k 3 -n"}' | head $limit
                 show_key
@@ -116,6 +125,7 @@ do
             while [[ -z "$looper" ]]
             do
                 iplist=''
+                sleep $sec
                 tput clear
                 echo "List of IPs connected (using Apache Server Status)"
                 echo
@@ -131,6 +141,7 @@ do
         k)  # sort by KeepAlive, too many means too many old connections kept alive too long
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 echo "If too many results listed here, then the web server
 might be keeping old connections alive too long.  You may want
@@ -149,6 +160,7 @@ alive by apache via the KeepAliveTimeout directive"
         l) # Netstat list of IPs
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 echo "List of IPs connected to all ports  (using netstat)"
                 echo
@@ -165,7 +177,8 @@ alive by apache via the KeepAliveTimeout directive"
             while [[ -z "$looper" ]]
             do
                 tput clear
-                echo "List of IPs connected to port 80 (using netstat)"
+                sleep $sec
+                tput clear
                 echo
                 netstat -tn | grep ":80" | awk '{print $5}' | grep -v -e "127.0.0" -e "129.174" | cut -d: -f1 | sort | uniq -c | sort -n
                 echo
@@ -179,6 +192,7 @@ alive by apache via the KeepAliveTimeout directive"
         o)  # sort by open processes
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} $4 !~ /[_KGSDIRCWL]/ {printf "%-6s %6s %6s %-4s %-8s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -k 3 -n"}' | head $limit
                 show_key
@@ -191,6 +205,7 @@ alive by apache via the KeepAliveTimeout directive"
         p)  # sort only POST threads by time
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | grep "POST" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} $4 !~ /[.]/ {printf "%-6s %6s %6s %-4s %-10s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -n"}' | head $limit
                 #service httpd fullstatus | grep ^[0-9] | grep -v "server-status" | grep "POST" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} {printf "%-6s %6s %6s %-4s %-10s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -n"}'
@@ -205,6 +220,7 @@ alive by apache via the KeepAliveTimeout directive"
         r)  # raw server status
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | head $limit
                 echo
@@ -238,6 +254,7 @@ alive by apache via the KeepAliveTimeout directive"
         w)  # Sort by inactive workers
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} $4 !~ /[WGCRK_]/ {printf "%-6s %6s %6s %-4s %-8s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -k 3 -n"}' | head $limit
                 echo
@@ -258,6 +275,7 @@ alive by apache via the KeepAliveTimeout directive"
         *)  # default
           while [[ -z "$looper" ]]
           do
+              sleep $sec
               tput clear
               links -dump $STATUS_URL | grep ^[0-9] | grep -v "server-status" | awk 'BEGIN {print "Seconds  PID    CPU State TYPE         IP                  Domain/URL\n--"} $4 !~ /[GCRK.]/ {printf "%-6s %6s %6s %-4s %-8s %-20s %2s %-2s\n",  $6, $2, $5,"  " $4, $13, $11, $12, $14|"sort -k 3 -n"}' | head $limit
               show_key
