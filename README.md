@@ -36,6 +36,12 @@ You can specify a different server-status location like so:
 ./atop -u http://127.0.0.1:8080/server-status
 ```
 
+Finally, this would set a sleep interval of 'x' seconds between screen clears if your brain just isn't that fast (1.5 seconds in the example):
+
+```
+./atop -s 1.5
+```
+
 See here for a blog post on using atop: <a href="http://mossiso.com/2014/04/02/atop-apache-top-for-keeping-tabs-on-the-web-servers.html">http://mossiso.com/2014/04/02/atop-apache-top-for-keeping-tabs-on-the-web-servers.html</a>
 
 
