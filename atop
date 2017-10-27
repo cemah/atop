@@ -248,6 +248,7 @@ alive by apache via the KeepAliveTimeout directive"
             word=''
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 if [[ -z "$word" ]]; then
                     read -p "Enter the search term: " word
