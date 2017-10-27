@@ -175,6 +175,7 @@ alive by apache via the KeepAliveTimeout directive"
         m) # Netstat SSL list of IPs
             while [[ -z "$looper" ]]
             do
+                sleep $sec
                 tput clear
                 echo "List of IPs connected to port 443 (using netstat)"
                 echo
@@ -190,7 +191,6 @@ alive by apache via the KeepAliveTimeout directive"
         n) # Netstat list of IPs
             while [[ -z "$looper" ]]
             do
-                tput clear
                 sleep $sec
                 tput clear
                 echo
