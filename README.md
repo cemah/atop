@@ -47,6 +47,7 @@ c = sort by CPU, no GCRK_
 i = list IPs connected to port 80 (uses Apache Server Status)
 k = sort by K (Keep alives)
 l = list IPs connected to all ports (uses netstat)
+m = list IPs connected to port 443 (uses netstat)
 n = list IPs connected to port 80 (uses netstat)
 o = sort open connections by CPU
 p = sort only POST threads by time
